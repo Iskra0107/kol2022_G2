@@ -8,14 +8,21 @@ import mk.ukim.finki.wp.kol2022.g2.model.exceptions.InvalidStudentIdException;
 import mk.ukim.finki.wp.kol2022.g2.repository.CourseRepository;
 import mk.ukim.finki.wp.kol2022.g2.repository.StudentRepository;
 import mk.ukim.finki.wp.kol2022.g2.service.StudentService;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
-public class StudentServiceImpl implements StudentService {
+public class StudentServiceImpl implements StudentService, UserDetailsService {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final PasswordEncoder passwordEncoder;
@@ -82,5 +89,15 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return results;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Student s = studentRepository.findByEmail(username);
+        return new User(
+                s.getEmail(),
+                s.getPassword(),
+                Stream.of(new SimpleGrantedAuthority(String.format("ROLE_%s", s.getType()))).collect(Collectors.toList())
+        );
     }
 }

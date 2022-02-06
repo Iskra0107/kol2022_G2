@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>WP Exam</title>
 </head>
@@ -44,10 +44,10 @@
             <td>
                     <!-- StudentController.delete (Only ADMIN can see this element)-->
                     <form method="post" th:action="@{'/students/{id}/delete' (id = ${s.getId()})}">
-                        <button type="submit" class="delete-item">Delete</button>
+                        <button sec:authorize="hasRole('ADMIN')" type="submit" class="delete-item">Delete</button>
                     </form>
                     <!-- StudentController.showEdit (Only ADMIN can see this element)-->
-                    <a th:href="@{'students/{id}/edit' (id = ${s.getId()})}" class="edit-item">Edit</a>
+                    <a sec:authorize="hasRole('ADMIN')" th:href="@{'students/{id}/edit' (id = ${s.getId()})}" class="edit-item">Edit</a>
             </td>
         </tr>
     </table>

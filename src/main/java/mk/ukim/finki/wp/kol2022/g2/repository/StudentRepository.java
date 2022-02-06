@@ -13,4 +13,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findAllByCoursesContaining(Course course);
     List<Student> findAllByEnrollmentDateBefore(LocalDate localDate);
     List<Student> findAllByCoursesContainingAndEnrollmentDateBefore(Course c, LocalDate ld);
+    Student findByEmail(String email);
 }
